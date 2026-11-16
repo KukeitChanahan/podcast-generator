@@ -1,18 +1,22 @@
+
 name: "Podcast Generator"
 author: "Kukeit Chanahan"
-description: "Generate a feed for a podcast from a YAML file"
+description: "Generate a podcast RSS feed from YAML"
+
+inputs:
+  name:
+    description: "Git commit author name"
+    required: false
+    default: "github-actions[bot]"
+
+  email:
+    description: "Git commit author email"
+    required: true
+
 runs:
   using: "docker"
   image: "Dockerfile"
-branding: 
+
+branding:
   icon: "git-branch"
   color: "red"
-inputs:
-  email:
-    description: The commiter's email address
-    required: true
-    default: ${{github.email}}@localhost
-    name:
-      description: The commiter's name
-      required: true
-      default: ${{github.actor}}

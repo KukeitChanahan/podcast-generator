@@ -1,15 +1,25 @@
+
 #!/bin/bash
+set -euo pipefail
 
-echo "========================"
+echo "=== Generate Podcast Feed ==="
 
-git config --global user.name "{GITHUB_ACTOR}"
-git config --global user.email "{INPUT_EMAIL}"
-git config --global --add self.directory /github/workspace
+cd "$GITHUB_WORKSPACE"
 
-python3 /usr/bin/feed.py
+git config --global user.name "${INPUT_NAME:-$GITHUB_ACTOR}"
+git config --global user.email "${INPUT_EMAIL:?Email is required}"
 
-git add -A && git commit -m "Update Feed"
+git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
-git push --set--upstream origin main
+python /usr/local/bin/feed.py
 
-echo "========================"
+git add podcast.xml
+
+if ! git diff --cached --quiet; then
+    git commit -m "Update Podcast Feed"
+    git push origin HEAD:main
+else
+    echo "No changes to commit"
+fi
+
+echo "=== Completed ==="
